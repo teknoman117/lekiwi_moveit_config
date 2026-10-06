@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Semantic description of the LeKiwi (config/lekiwi.urdf.xacro): the SO-101 arm groups from
+     so101_moveit_config, plus collision checking against the base and the ground -->
+<robot name="lekiwi">
+
+  <!-- Planning groups -->
+  <group name="arm">
+    <chain base_link="so101_base_link" tip_link="gripper_frame_link"/>
+  </group>
+  <!-- The same joints with a position-only IK solver
+       (so101_moveit_config/config/kinematics.yaml). The arm has 5 joints, so a
+       pose goal only solves when its orientation is reachable; use this group for position goals
+       and for dragging the marker in RViz. -->
+  <group name="arm_position_only">
+    <chain base_link="so101_base_link" tip_link="gripper_frame_link"/>
+  </group>
+  <!-- The same joints again, for the marker follower (lekiwi_teleop arm_marker): position-only
+       IK in local mode, which stays close to the current joint angles. -->
+  <group name="arm_teleop">
+    <chain base_link="so101_base_link" tip_link="gripper_frame_link"/>
+  </group>
+  <!-- The fixed jaw (gripper_link) is part of the arm chain; only the moving jaw is in this group -->
+  <group name="gripper">
+    <joint name="gripper"/>
+  </group>
+
+  <!-- Named poses -->
+  <group_state name="zero" group="arm">
+    <joint name="shoulder_pan" value="0"/>
+    <joint name="shoulder_lift" value="0"/>
+    <joint name="elbow_flex" value="0"/>
+    <joint name="wrist_flex" value="0"/>
+    <joint name="wrist_roll" value="0"/>
+  </group_state>
+  <group_state name="closed" group="gripper">
+    <joint name="gripper" value="0"/>
+  </group_state>
+  <group_state name="open" group="gripper">
+    <joint name="gripper" value="1.2"/>
+  </group_state>
+
+  <!-- End effector -->
+  <end_effector name="gripper" parent_link="gripper_frame_link" group="gripper" parent_group="arm"/>
+  <end_effector name="gripper_position_only" parent_link="gripper_frame_link" group="gripper" parent_group="arm_position_only"/>
+
+  <!-- Collision checking. Disabled: links joined by a joint (Adjacent), pairs in contact at the
+       zero pose (Default), and pairs of links that do not move relative to each other (base,
+       wheels, arm mount, ground) that never collided in 2000 random poses (Never). Every arm
+       link from shoulder_link down stays checked against the base and the ground. -->
+  <disable_collisions link1="base_link" link2="ground" reason="Never"/>
+  <disable_collisions link1="base_link" link2="left_motor" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="left_wheel_link" reason="Never"/>
+  <disable_collisions link1="base_link" link2="rear_motor" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="rear_wheel_link" reason="Never"/>
+  <disable_collisions link1="base_link" link2="right_motor" reason="Adjacent"/>
+  <disable_collisions link1="base_link" link2="right_wheel_link" reason="Never"/>
+  <disable_collisions link1="base_link" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="base_link" link2="upper_plate_link" reason="Adjacent"/>
+  <disable_collisions link1="gripper_link" link2="moving_jaw_so101_v1_link" reason="Adjacent"/>
+  <disable_collisions link1="gripper_link" link2="wrist_link" reason="Adjacent"/>
+  <disable_collisions link1="ground" link2="left_motor" reason="Never"/>
+  <disable_collisions link1="ground" link2="left_wheel_link" reason="Never"/>
+  <disable_collisions link1="ground" link2="rear_motor" reason="Never"/>
+  <disable_collisions link1="ground" link2="rear_wheel_link" reason="Never"/>
+  <disable_collisions link1="ground" link2="right_motor" reason="Never"/>
+  <disable_collisions link1="ground" link2="right_wheel_link" reason="Never"/>
+  <disable_collisions link1="ground" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="ground" link2="upper_plate_link" reason="Never"/>
+  <disable_collisions link1="left_motor" link2="left_wheel_link" reason="Adjacent"/>
+  <disable_collisions link1="left_motor" link2="rear_motor" reason="Never"/>
+  <disable_collisions link1="left_motor" link2="rear_wheel_link" reason="Never"/>
+  <disable_collisions link1="left_motor" link2="right_motor" reason="Never"/>
+  <disable_collisions link1="left_motor" link2="right_wheel_link" reason="Never"/>
+  <disable_collisions link1="left_motor" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="left_motor" link2="upper_plate_link" reason="Default"/>
+  <disable_collisions link1="left_wheel_link" link2="rear_motor" reason="Never"/>
+  <disable_collisions link1="left_wheel_link" link2="rear_wheel_link" reason="Never"/>
+  <disable_collisions link1="left_wheel_link" link2="right_motor" reason="Never"/>
+  <disable_collisions link1="left_wheel_link" link2="right_wheel_link" reason="Never"/>
+  <disable_collisions link1="left_wheel_link" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="left_wheel_link" link2="upper_plate_link" reason="Never"/>
+  <disable_collisions link1="lower_arm_link" link2="upper_arm_link" reason="Adjacent"/>
+  <disable_collisions link1="lower_arm_link" link2="wrist_link" reason="Adjacent"/>
+  <disable_collisions link1="rear_motor" link2="rear_wheel_link" reason="Adjacent"/>
+  <disable_collisions link1="rear_motor" link2="right_motor" reason="Never"/>
+  <disable_collisions link1="rear_motor" link2="right_wheel_link" reason="Never"/>
+  <disable_collisions link1="rear_motor" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="rear_motor" link2="upper_plate_link" reason="Default"/>
+  <disable_collisions link1="rear_wheel_link" link2="right_motor" reason="Never"/>
+  <disable_collisions link1="rear_wheel_link" link2="right_wheel_link" reason="Never"/>
+  <disable_collisions link1="rear_wheel_link" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="rear_wheel_link" link2="upper_plate_link" reason="Never"/>
+  <disable_collisions link1="right_motor" link2="right_wheel_link" reason="Adjacent"/>
+  <disable_collisions link1="right_motor" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="right_motor" link2="upper_plate_link" reason="Default"/>
+  <disable_collisions link1="right_wheel_link" link2="so101_base_link" reason="Never"/>
+  <disable_collisions link1="right_wheel_link" link2="upper_plate_link" reason="Never"/>
+  <disable_collisions link1="shoulder_link" link2="so101_base_link" reason="Adjacent"/>
+  <disable_collisions link1="shoulder_link" link2="upper_arm_link" reason="Adjacent"/>
+  <disable_collisions link1="so101_base_link" link2="upper_plate_link" reason="Adjacent"/>
+
+</robot>

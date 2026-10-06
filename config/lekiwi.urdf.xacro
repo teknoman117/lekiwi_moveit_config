@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="lekiwi">
+
+  <!-- MoveIt's model of the LeKiwi: the combined robot from lekiwi_bringup plus the ground. Only
+       move_group and the MoveIt RViz panel use this file; robot_state_publisher and ros2_control
+       keep using lekiwi_bringup/urdf/lekiwi.urdf.xacro, and the joints are the same. -->
+  <xacro:include filename="$(find lekiwi_bringup)/urdf/lekiwi.urdf.xacro"/>
+
+  <!-- Ground: base_footprint is at floor level, so the floor moves with the robot as it drives.
+       The top surface is at z = 0. -->
+  <xacro:property name="ground_size" value="2.0"/>
+  <xacro:property name="ground_thickness" value="0.01"/>
+
+  <link name="ground">
+    <visual>
+      <origin xyz="0 0 ${-ground_thickness/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${ground_size} ${ground_size} ${ground_thickness}"/>
+      </geometry>
+      <material name="lekiwi_moveit_ground">
+        <color rgba="0.35 0.35 0.35 0.4"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 ${-ground_thickness/2}" rpy="0 0 0"/>
+      <geometry>
+        <box size="${ground_size} ${ground_size} ${ground_thickness}"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="ground_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="ground"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+
+</robot>
