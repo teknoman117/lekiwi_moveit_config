@@ -12,4 +12,6 @@ install(DIRECTORY
 
 install(FILES .setup_assistant DESTINATION share/${PROJECT_NAME})
 
+install(PROGRAMS scripts/compute_disabled_collisions.py DESTINATION lib/${PROJECT_NAME})
+
 ament_package()

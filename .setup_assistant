@@ -3,7 +3,7 @@ moveit_setup_assistant_config:
     package: lekiwi_moveit_config
     relative_path: config/lekiwi.urdf.xacro
   srdf:
-    relative_path: config/lekiwi.srdf
+    relative_path: config/lekiwi.srdf.xacro
   package_settings:
     author_name: Nathan Lewis
     author_email: git@nrlewis.dev

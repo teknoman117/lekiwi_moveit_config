@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- The ground, for MoveIt's collision checking: a box whose top surface is at z = 0 of
+       'parent'. On the LeKiwi the parent is base_footprint, at floor level, so the floor moves
+       with the robot as it drives. -->
+  <xacro:macro name="lekiwi_ground" params="parent:=base_footprint size:=2.0 thickness:=0.01">
+    <link name="ground">
+      <visual>
+        <origin xyz="0 0 ${-thickness/2}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${size} ${size} ${thickness}"/>
+        </geometry>
+        <material name="lekiwi_moveit_ground">
+          <color rgba="0.35 0.35 0.35 0.4"/>
+        </material>
+      </visual>
+      <collision>
+        <origin xyz="0 0 ${-thickness/2}" rpy="0 0 0"/>
+        <geometry>
+          <box size="${size} ${size} ${thickness}"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <joint name="ground_joint" type="fixed">
+      <parent link="${parent}"/>
+      <child link="ground"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </joint>
+  </xacro:macro>
+
+</robot>

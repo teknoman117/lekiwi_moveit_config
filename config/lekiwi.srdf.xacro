@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- Semantic description of the LeKiwi (config/lekiwi.urdf.xacro) -->
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="lekiwi">
+
+  <xacro:include filename="$(find lekiwi_moveit_config)/config/lekiwi_semantic.xacro"/>
+  <xacro:lekiwi_semantic/>
+
+</robot>

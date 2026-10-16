@@ -10,11 +10,13 @@ The planning groups (`arm`, `arm_position_only`, `gripper`), named poses, kinema
 (`kinematics.yaml`), joint limits and controller mapping are the arm's, so
 `launch/moveit_config.py` loads those files from `so101_moveit_config`. This package adds:
 
-- `config/lekiwi.urdf.xacro`: `lekiwi_bringup/urdf/lekiwi.urdf.xacro` plus a `ground` link (a
-  2 m x 2 m box whose top is at z = 0) fixed to `base_footprint`, so the floor moves with the robot.
-  Only move_group and the MoveIt RViz panel load it; `robot_state_publisher` and ros2_control keep
-  the bringup URDF. The joints are the same.
-- `config/lekiwi.srdf`: the arm's groups, and the disabled collision pairs for the whole robot.
+- `config/lekiwi.urdf.xacro`: `lekiwi_bringup/urdf/lekiwi.urdf.xacro` plus the ground
+  (`config/ground.xacro`, the `lekiwi_ground` macro: a 2 m x 2 m box whose top is at z = 0,
+  fixed to `base_footprint`, so the floor moves with the robot). Only move_group and the MoveIt
+  RViz panel load it; `robot_state_publisher` and ros2_control keep the bringup URDF. The joints
+  are the same.
+- `config/lekiwi.srdf.xacro`: the `lekiwi_semantic` macro (`config/lekiwi_semantic.xacro`): the
+  arm's groups, poses and end effectors, and the disabled collision pairs for the whole robot.
   Every arm link from `shoulder_link` down stays checked against the base parts and the ground.
   Disabled: links joined by a joint, pairs in contact at the zero pose (the motor mounts and the
   upper plate), and pairs of links that do not move relative to each other (base, wheels, arm
@@ -46,3 +48,18 @@ The host that runs move_group needs a clock synchronized with the robot's (for e
 both): before it executes a trajectory, MoveIt waits up to 1 s for a `/joint_states` message
 stamped at or after its own current time, and aborts the execution if none comes. Without clock
 sync, run move_group on the robot instead.
+
+## Robots built on the LeKiwi
+
+A robot that adds parts to the LeKiwi (sensors, mounts; see `manipulator`) keeps this package as
+is and brings:
+
+- a MoveIt model: its robot plus `config/ground.xacro`;
+- an SRDF: `config/lekiwi_semantic.xacro` plus the collision pairs of its own links, generated
+  with `compute_disabled_collisions.py --new-only` (installed with this package; needs
+  `ros-jazzy-moveit-py`);
+- MoveIt launches through `launch/moveit_config.py`:
+  `lekiwi_moveit_config(package=..., robot_name=..., urdf=..., srdf=...)`.
+
+`lekiwi_bringup`'s `robot.launch.py` and `workstation.launch.py` take it with
+`moveit_config_package:=<package>` (and `description_file:=` for the robot model).
